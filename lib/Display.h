@@ -1,16 +1,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-//include opengl stuff
-#ifdef __APPLE__
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include <GL/freeglut.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/freeglut.h>
-#endif
 
 
 #include <string>

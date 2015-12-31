@@ -58,7 +58,7 @@
 #include "PointsDEL.h"
 
 
-#include "CmdLine.h"
+#include <tclap/CmdLine.h>
 
 #include "GlutStrokeFont.h"
 
@@ -149,7 +149,7 @@ int main(int argc, char **argv){
 
 
 
-  SparseData<double> spData();
+  SparseData<double> spData;
 
   StandardData<double> data(m);
   StandardDataProxy<double> dataProxy(m, data);
