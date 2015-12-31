@@ -18,7 +18,7 @@ ADD_CUSTOM_TARGET(R_focus
     ${CMAKE_SOURCE_DIR}/external/gmra/external/metrics/lib//EigenWasserstein.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/randomsvd/lib//EigenRandomSVD.h
     ${CMAKE_SOURCE_DIR}/external/gmra/external/randomsvd/lib//EigenRandomRange.h
-    ${CMAKE_SOURCE_DIR}/external/gmra/external/utild/lib//Random.h
+    ${CMAKE_SOURCE_DIR}/external/gmra/external/utils/lib//Random.h
     ./focus/src
 )
 

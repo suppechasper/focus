@@ -17,8 +17,8 @@
 #include <string.h>
 #include <pthread.h>
 
-#include "Eigen/Dense"
-#include "Eigen/Sparse"
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 #include "GMRATree.h"
 
