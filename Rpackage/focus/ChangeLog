@@ -1,0 +1,8 @@
+
+##Focus version 0.2 - S. Gerber - April 2015 ##
+- Added documentation
+- Refactoring of method names
+- Refactoring of software strcuture
+
+##FOcus version 0.1 - S. Gerber - January 2015 ##
+- Inital package, adapted from gyroscopeV2 

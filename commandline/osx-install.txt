@@ -1,0 +1,62 @@
+1. Downlaod and instal X11 ( https://xquartz.macosforge.org/trac ). 
+   Might require gfortran ( https://gcc.gnu.org/wiki/GFortranBinaries#MacOS)
+
+2. Download and install CMake ( http://www.cmake.org/ )
+
+3. Downlaod and install R ( https://www.r-project.org/ )
+
+
+4. Install focus package
+-- R CMD INSTALL focus-x.x.tar.gz
+
+
+If that doesn't work, adjust Makevars:
+
+-- gunzip focus-x.x.tar.gz
+-- tar -xvf focus-x.x.tar
+-- edit focus/src/Makevars
+   Replace -L/usr/X11/lib with the path to your X11 libraries directory
+-- R CMD INSTALL focus
+
+
+
+If that does not work install freeglut:
+
+1. Download freeglut ( http://freeglut.sourceforge.net/ )
+
+2. Install freeglut with cmake:
+
+In a terminal
+
+a) extract freeglut archive 
+-- gunzip freeglut.x.x.x.tar.gz
+-- tar -xvf freeglut.x.x.x.tar
+
+-b) create folder "bin" in freeglut folder
+-- cd freglut.x.x.x
+-- mkdir bin
+
+c) go to bin folder
+-- cd bin
+
+d) run ccmake on freeglut folder
+-- ccmake ../
+
+e) An error message will appear. Edit CMakeCache.txt. 
+   Replace the lines 
+
+//Include for OpenGL on OSX
+OPENGL_INCLUDE_DIR:PATH=/System/Library/Frameworks/OpenGL.framework
+
+//OpenGL lib for OSX
+OPENGL_gl_LIBRARY:FILEPATH=/System/Library/Frameworks/OpenGL.framework
+
+  with path to X11 libraries and incmludes e.g.:
+
+//Include for OpenGL on OSX
+OPENGL_INCLUDE_DIR:PATH=/usr/X11/include
+
+//OpenGL lib for OSX
+OPENGL_gl_LIBRARY:FILEPATH=/usr/X11/lib
+
+

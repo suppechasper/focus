@@ -1,0 +1,11 @@
+SYS = $(shell uname)
+
+ifeq ($(SYS),Darwin)
+  PKG_CPPFLAGS=-I.  -I/usr/local/include -I/usr/X11R6/include -I/usr/local/include
+  PKG_LIBS= -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names -lglut -lGL -lGLU -lpthread -L/usr/X11/lib
+else
+  PKG_CPPFLAGS=-I. -I/usr/local/include -I/usr/X11R6/include
+  PKG_LIBS= -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names -lGL -lGLU -lglut -lpthread 
+endif
+
+

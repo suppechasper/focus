@@ -1,0 +1,10 @@
+Package: focus
+Version: 0.2
+Date: 2015-04-16
+Author: Samuel Gerber <sgerber@math.duke.edu>, Sean McKenna 
+Maintainer: Samuel Gerber <sgerber@math.duke.edu>
+Description: Interactive exploratory visualization for high-dimensional data.
+Title: Focus
+Depends: R (>= 2.10) 
+License: GPL-2
+Repository: CRAN
