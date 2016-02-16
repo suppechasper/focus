@@ -1,6 +1,6 @@
 Package: focus
 Version: 0.2
-Date: 2015-04-16
+Date: 2016-02-16
 Author: Samuel Gerber <sgerber@math.duke.edu>, Sean McKenna 
 Maintainer: Samuel Gerber <sgerber@math.duke.edu>
 Description: Interactive exploratory visualization for high-dimensional data.

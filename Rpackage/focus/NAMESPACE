@@ -25,6 +25,7 @@ export(
   "focus.add.pca.display",
   "focus.add.group.pca.display",
   "focus.add.image.display",
+  "focus.add.scatter3.display",
   "focus.add.multi.index.image.display",
   "focus.add.point.as.image.display",
   "focus.add.point.as.image.patch.display",

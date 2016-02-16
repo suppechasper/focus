@@ -49,6 +49,7 @@
 #include "ProjectorBallShadowBackground.h"
 
 //other displays
+#include "Scatter3DEL.h"
 #include "PCADEL.h"
 #include "ProfileDEL.h"
 #include "ImageDEL.h"
@@ -57,13 +58,9 @@
 #include "OffsetMatrixDEL.h"
 #include "PointsDEL.h"
 
-
 #include <tclap/CmdLine.h>
 
 #include "GlutStrokeFont.h"
-
-
-
 
 #define MAKE_STRING_(x) #x
 #define MAKE_STRING(x) MAKE_STRING_(x)
@@ -231,6 +228,8 @@ int main(int argc, char **argv){
   focus->addDisplayElement(pr);
 
   PointsDEL<double> *pts = new PointsDEL<double>(data, font);
+  
+  Scatter3DEL<double> *scatter3 = new Scatter3DEL<double>(data);
 
   int nGroups = 9;
   double a = 1.0/(nGroups+2);

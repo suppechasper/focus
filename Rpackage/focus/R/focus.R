@@ -261,6 +261,14 @@ focus.set.projection.background.color <- function(fbg, r, g, b, alpha=1){
 
 
 #other display elements
+focus.add.scatter3.display <- function(fdata, x, y, w, h){
+  delptr = .Call( "focusScatter3DEL", fdata, as.double(x), as.double(y),
+      as.double(w), as.double(h) )
+  delptr
+}
+
+
+
 focus.add.profile.display <- function(fdata, x, y, w, h, showBG = TRUE){
   delptr = .Call( "focusProfileDEL", fdata, as.double(x), as.double(y),
       as.double(w), as.double(h), as.integer(showBG) )

@@ -73,6 +73,7 @@
 
 //other displays
 #include "PCADEL.h"
+#include "Scatter3DEL.h"
 #include "ProfileDEL.h"
 #include "ImageDEL.h"
 #include "MatrixDEL.h"
@@ -634,10 +635,6 @@ extern "C" {
 
 
 
-
-
-
-
   SEXP focusProjectionGroup(SEXP Rprojections){
     GroupedProjectorObserver<double> *group = new GroupedProjectorObserver<double>();
 
@@ -652,8 +649,6 @@ extern "C" {
 
     return R_NilValue; 
   };
-
-
 
 
 
@@ -813,6 +808,18 @@ extern "C" {
   
     ProfileDEL<double> *del=new ProfileDEL<double>(*data, focus->getFont() );
     return addDisplayElement(del, Rx, Ry, Rw, Rh,  *INTEGER(RshowBG) );
+  };
+
+
+  SEXP focusScatter3DEL(SEXP Rdata, SEXP Rx, SEXP Ry, SEXP Rw, SEXP Rh){
+    if(focus == NULL){
+      return R_NilValue;
+    }
+    
+    Data<double> *data = getData(Rdata);
+  
+    Scatter3DEL<double> *del=new Scatter3DEL<double>(*data );
+    return addDisplayElement(del, Rx, Ry, Rw, Rh,  false );
   };
 
 
