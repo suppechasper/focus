@@ -78,7 +78,6 @@ class Focus : public Display{
       glMatrixMode(GL_PROJECTION);  
       glLoadIdentity();
       glOrtho (0, width, height, 0, 0, 1);
-
       for(std::vector<DisplayElement *>::iterator it=elements.begin(); 
           it != elements.end(); ++it){
         (*it)->reshape(w, h);

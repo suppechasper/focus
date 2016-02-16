@@ -4,7 +4,8 @@
 
 #include <vector>
 
-#include "Eigen/Dense"
+#include <Eigen/Dense>
+#include <Eigen/Geometry> 
 
 #include "DataInterface.h"
 
@@ -20,6 +21,7 @@ class Scatter3DEL : public AdjustableDisplayElement{
   protected:
     typedef typename Eigen::Matrix<TPrecision, Eigen::Dynamic, Eigen::Dynamic> MatrixXp;
     typedef typename Eigen::Matrix<TPrecision, Eigen::Dynamic, 1> VectorXp;
+    typedef typename Eigen::Vector3d Vector3d;
 
 
 #define BUFSIZE 512
@@ -34,13 +36,10 @@ class Scatter3DEL : public AdjustableDisplayElement{
     int mod;
 
     //naviagtion
-    TPrecision zoom ;
-    TPrecision tx ;
-    TPrecision ty ;
-    TPrecision tz ;
-    TPrecision rotation[3];
-    int rotationAxis ;
-
+    Vector3d eye;
+    Vector3d up;
+    Vector3d center;
+    float pAngle;
 
     float alpha;
     float pointSize;
@@ -58,15 +57,14 @@ class Scatter3DEL : public AdjustableDisplayElement{
         cur_button = -1;
 
         //naviagtion
-        zoom = 1;
-        tx = 0;
-        ty = 0;
-        tz = 1;
-        rotation[0] = -90;
-        rotation[1] = 0;
-        rotation[2] = 0;
-        rotationAxis = 0;
-      
+        up = Vector3d::Zero(3); 
+        up(1) = 1;
+        center = Vector3d::Constant(0.5);
+        center(2) = 1;
+        eye = Vector3d::Constant(0.5);
+        eye(2) = 0; 
+        pAngle = 65;
+        
     };
 
 
@@ -84,40 +82,34 @@ class Scatter3DEL : public AdjustableDisplayElement{
     virtual void displayAction(void){
 
       using namespace Eigen;
-
-
+  
       glViewport(this->xLeft, this->yTop, this->width, this->height);
+      
+      glMatrixMode(GL_PROJECTION);
+      glPushMatrix();
+      glLoadIdentity();
+      setupPerspective(this->width, this->height); 
+
 
       glMatrixMode(GL_MODELVIEW); 	
       glLoadIdentity();
-
-      glScalef(zoom, zoom, zoom);
-      glTranslatef(tx,ty, tz); 
-      glRotatef(rotation[0], 1, 0, 0); 
-      glRotatef(rotation[1], 0, 1, 0); 
-      glRotatef(rotation[2], 0, 0, 1); 
-      glTranslatef(0, 0, 0.5); 
+      gluLookAt( eye(0), eye(1), eye(2), center(0), center(1), center(2), up(0), up(1), up(2) );
 
       glPointSize(this->pointSize);
       glBegin(GL_POINTS);
       for(int i=0; i< data.getNumberOfPoints(); i++){
         const VectorXp &p= data.getData(i);
 
-        double a;
-        if(this->data.isActive(i) ){
-          a = 0.1 + 0.9 * this->alpha * this->data.getDensity(i);
-        }
-        else{
-          a = this->alpha * 0.1 * this->data.getDensity(i);
-        }
 
         RGB &col = this->data.getColor(i);
-        glColor4f(col.r, col.g, col.b, a);
-        glVertex3f( p(0), p(1), p(3) );
+        glColor4f(col.r, col.g, col.b, 0.5 );
+        glVertex3f( p(0), p(1), p(2) );
 
       }
       glEnd();
-
+      
+      glMatrixMode(GL_PROJECTION);
+      glPopMatrix();
 
     };
 
@@ -127,17 +119,17 @@ class Scatter3DEL : public AdjustableDisplayElement{
 
     virtual void keyboard(unsigned char key, int x, int y){
       switch(key){
-        case 'x':
-        case 'X':
-          rotationAxis = 0;
+        case '>':
+          pointSize *= 1.05;
           break;
-        case 'y':
-        case 'Y':
-          rotationAxis = 1;
+        case '<':
+          pointSize /= 1.05;
           break;
-        case 'z':
-        case 'Z':
-          rotationAxis = 2;
+        case '+':
+          pAngle *= 1.05;
+          break;
+        case '-':
+          pAngle /= 1.05;
           break;
       }
       glutPostRedisplay();
@@ -146,27 +138,27 @@ class Scatter3DEL : public AdjustableDisplayElement{
 
 
     virtual void special(int key, int x, int y){
+      Vector3d dir = center-eye;
+      Vector3d o = dir.cross( up );
       switch(key)
       {
         case GLUT_KEY_LEFT:
-          alpha *= 0.95;
+          eye -= 0.01 * o;
+          center -= 0.01 * o;
           break;
         case GLUT_KEY_RIGHT:
-          alpha *= 1.05;
+          eye += 0.01*o;
+          center += 0.01*o;
           break;
         case GLUT_KEY_DOWN:
-          pointSize *= 0.95;
+          eye += 0.01*dir;
+          center += 0.01*dir;
           break;
         case GLUT_KEY_UP:
-          pointSize *= 1.05;
+          eye -= 0.01*dir;
+          center -= 0.01*dir;
           break;
 
-      }
-      if(alpha < 0){
-        alpha=0;
-      }
-      else if(alpha > 1){
-        alpha=1;
       }
 
       glutPostRedisplay();
@@ -206,39 +198,21 @@ class Scatter3DEL : public AdjustableDisplayElement{
 
       switch(cur_button){
         case GLUT_LEFT_BUTTON:
-          if(mod == GLUT_ACTIVE_CTRL){
-            zoom += dx*0.01;
-            if(zoom < 0){
-              zoom = 0;
-            }
-          }
-          else{
-            // translate
-            tx -= dx*0.01;
-            ty += dy*0.01;  
-          }
+        {
+          Vector3d dir = Eigen::AngleAxisd( dx*0.001, up) *  (center-eye);
+          center = eye + dir;
+          
+          Vector3d o = dir.cross( up );
+          up = Eigen::AngleAxisd( dy*0.01/pAngle, o) *  up;
+          dir = Eigen::AngleAxisd( dy*0.01/pAngle, o) *  dir;
+          center = eye + dir;
           break;
-
+        }
         case GLUT_MIDDLE_BUTTON:
-
-          zoom += dx*0.01;
-          if(zoom < 0){
-            zoom = 0;
-          }
 
           break;
 
         case GLUT_RIGHT_BUTTON:
-          // rotate
-
-          if(mod == GLUT_ACTIVE_CTRL){
-          }
-          else{
-            TPrecision rot = rotation[rotationAxis] ;
-            rot += dx;
-            int r = (int)(rot/360);
-            rotation[rotationAxis]= rot - r*360;
-          }
 
           break;
       }
@@ -255,7 +229,20 @@ class Scatter3DEL : public AdjustableDisplayElement{
 
 
 
+private:
 
+void setupPerspective(int w, int h){  
+  TPrecision sx=1;
+  TPrecision sy=1;
+  if(w>h){
+    sx = (TPrecision)w/h;
+  }
+  else{
+    sy = (TPrecision)h/w;
+  }
+  gluPerspective(pAngle, ( (float)(w) ) / h, 0.001, 1.5);
+  //glOrtho(-4*sx, 4*sx, -4*sy, 4*sy, 16, -16);
+}
 
 };
 
