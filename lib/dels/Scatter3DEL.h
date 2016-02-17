@@ -57,12 +57,11 @@ class Scatter3DEL : public AdjustableDisplayElement{
         cur_button = -1;
 
         //naviagtion
-        up = Vector3d::Zero(3); 
+        up = Vector3d::Zero(); 
         up(1) = 1;
-        center = Vector3d::Constant(0.5);
+        center = Vector3d::Zero();
         center(2) = 1;
-        eye = Vector3d::Constant(0.5);
-        eye(2) = 0; 
+        eye = Vector3d::Zero();
         pAngle = 65;
         
     };
@@ -95,16 +94,38 @@ class Scatter3DEL : public AdjustableDisplayElement{
       glLoadIdentity();
       gluLookAt( eye(0), eye(1), eye(2), center(0), center(1), center(2), up(0), up(1), up(2) );
 
-      glPointSize(this->pointSize);
-      glBegin(GL_POINTS);
+/*
+      Vector3d dir = center - eye;
+      double t = eye.dot(dir);
+      std::vector< std::pair<double, int> > depth( data.getNumberOfPoints() );
       for(int i=0; i< data.getNumberOfPoints(); i++){
         const VectorXp &p= data.getData(i);
+        depth[i] = std::pair<double, int>(p.dot(dir) - t, i);
+      }
+      std::sort( depth.begin(), depth.end() );
+      double tMax = depth[depth.size() - 1].first;
 
+      glPointSize(this->pointSize);
+      glBegin(GL_POINTS);
+      for(int i=depth.size()-1; i > 0; i--){
+        if( depth[i].first > 0){
+          const VectorXp &p= data.getData( depth[i].second );
+          RGB &col = this->data.getColor(i);
+          glColor4f(col.r, col.g, col.b, 1.0 - 0.9 * depth[i].first / tMax );
+          glVertex3f( p(0), p(1), p(2) );
+        }
 
+      }
+      glEnd();
+*/
+
+      glPointSize(this->pointSize);
+      glBegin(GL_POINTS);
+      for(int i=0; i < data.getNumberOfPoints(); i++){
+        const VectorXp &p= data.getData( i );
         RGB &col = this->data.getColor(i);
-        glColor4f(col.r, col.g, col.b, 0.5 );
+        glColor4f(col.r, col.g, col.b, 1.0 );
         glVertex3f( p(0), p(1), p(2) );
-
       }
       glEnd();
       
